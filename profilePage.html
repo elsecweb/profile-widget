@@ -1,0 +1,160 @@
+
+<div id="loading" class="extrude">
+    <div class="loading">Loading...</div>
+</div>
+
+<div id="listing-container" style="display:none">
+    <table class="table table-striped table-hover accordion-table" id='profile-listing'>
+    </table>
+</div>
+
+<script>
+// Given data as JSON object, this script calls helper functions that
+// parse and insert data as formatted HTML.
+function processData(data_string) {
+
+    var peopleData = JSON.parse(data_string['GOOGLE SHEET STRING GOES HERE']);
+
+    buildListing(peopleData.profiles);
+    $("#loading").hide();
+    $("#listing-container").show();
+}
+
+// A helper that, when given data as JSON object, parses and inserts 
+// course data into html tables. This html is appended to the 
+// corresponding page element.
+function buildListing(data) {   
+    var profile = [];
+    // data initially is an object of objects, need to turn it into an array of arrays
+    for (var a in data) {
+        profile.push([a, data[a]]);
+    }
+    for (var i = 0; i < profile.length; i++) {
+        // Need the [1] because profile is an array of arrays and the inner array always has 2 items,
+        // the json object number ([0]), and the actual object with values ([1]).
+        var output = "<tbody>"
+        output += "<tr class='accordion-toggle'>"        
+        // Photo section
+        output += "<td class='col1'>";
+        if (profile[i][1].photo){
+            output += "<img src='"+profile[i][1].photo+"'/>";
+        } else {
+            output += "<div style='height:106px; width:75px'></div>";
+        }
+        output += "</td>";
+        output += "<td>";
+        // Check if a profile page exists, if so link it, else just a text name
+        output += "<strong>" + profile[i][1].name + "</strong><br>";
+
+        if (profile[i][1].website) {
+            output += "<a href='" + profile[i][1].website + "'>" + profile[i][1].website + "</a>";
+        }
+
+        output += "</td>";
+        output += "<td class='col3'>";
+        output += profile[i][1].subject;
+        output += "</td>";
+        output += '<td class="col4">' +
+                  '<span class="toggle-icon">' +
+                  '<svg version="1.1" x="0px" y="0px" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg" fit="" height="100%" width="100%" preserveAspectRatio="xMidYMid meet" focusable="false">' +
+                        '<path d="M24 16l-12 12 2.83 2.83 9.17-9.17 9.17 9.17 2.83-2.83z" fill="#3d4a43"></path>' +
+                        '<path d="M0 0h48v48h-48z" fill="none"></path>' +
+                  '</svg>' +
+                  '</span>' +
+                  '</td>'
+        output += "</tr>";
+
+        output += "<tr>"
+        output += "<td colspan='4'>"
+
+        output += "<div class='row-fluid'>"
+
+        output += "<div class='span6'>"
+        output += "<h3> QUESTION </h3>"
+        output += "<p>" + profile[i][1].firstQuestion + "</p>"
+        output += "<h3> QUESTION </h3>"
+        output += "<p>" + profile[i][1].secondQuestion + "</p>"        
+        output += "</div>"
+
+        output += "<div class='span6'>"
+        output += "<h3> QUESTION </h3>"
+        output += "<p>" + profile[i][1].thirdQuestion + "</p>"
+        output += "<h3> QUESTION </h3>"
+        output += "<p>" + profile[i][1].fourthQuestion + "</p>" 
+        output += "</div>"
+
+        output += "</div>"
+
+        output += "</td>"
+        output += "</tr>"
+
+        output += "</tbody>"
+        $("#student-listing").append(output);
+    }
+
+    
+}
+</script>
+
+
+<script>
+$(document).ready(function() { $(".accordion-toggle").click(function() {
+        return $(this).parent().toggleClass("expanded"), !1 }) });
+</script>
+<style>
+.accordion-table tbody.expanded .toggle-icon {
+    -webkit-transform: rotate(0deg) scale(0.8);
+    transform: rotate(0deg) scale(0.8);
+}
+.toggle-icon {
+    -webkit-transform: rotate(180deg) scale(0.8);
+    transform: rotate(180deg) scale(0.8);
+    display: block;
+}
+.accordion-table tbody tr:nth-child(2) {
+    display:none;
+}
+.accordion-table tbody tr:nth-child(2) td div {
+    border-top: 0px;
+}
+.accordion-table tbody.expanded tr:nth-child(2) {
+    display: table-row;
+}
+
+.col1 {
+    min-width:75px;
+    width: 80px;
+}
+.col4 {
+    width: 80px;
+
+}
+@media (min-width: 150px) and (max-width: 350px) {
+    td.col1{
+        display:none;
+        width:0;
+        height:0;
+        opacity:0;
+        visibility: collapse;
+    } 
+    td.col3{
+        display:none;
+        width:0;
+        height:0;
+        opacity:0;
+        visibility: collapse;
+    } 
+}
+@media (min-width: 351px) and (max-width: 500px) {
+    td.col3{
+        display:none;
+        width:0;
+        height:0;
+        opacity:0;
+        visibility: collapse;
+    } 
+}
+</style>
+
+<!-- This following gets JSON data, wrapped in a function call to 'parseResponse' -->
+<script src="https://gentle-stream.appspot.com/"></script>

@@ -1,0 +1,52 @@
+
+<div class="span sidebar">
+    <div class="extrude">
+        <h5 class="sidebar-title">Profile Title</h5>
+        <div id="ctl12_ctl00_phsidebar_2_pnlContent" class="sidebar-content">
+            <div id="my_content"></div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+// Given data as JSON object, this script calls helper functions that
+// parse and insert data as formatted HTML.
+function processData(data_string) {
+    var data = JSON.parse(data_string['PUT GOOGLE SHEET STRING HERE']);
+    var htmlData = buildHTML(data.PROFILE);
+
+    jQuery("#my_content").append(htmlData)
+}
+
+function buildHTML(data) {    
+    var output = "";
+    var profile = [];
+    // data initially is an object of objects, need to turn it into an array of arrays
+    for (var a in data) {
+        profile.push([a, data[a]]);
+    }
+
+    var N = profile.length;
+    var i = Math.floor((Math.random() * N));
+
+
+    output += "<div class='image-caption-container'><img src='"+profile[i][1].photo+"'></div>"
+    output += "<h3>" + profile[i][1].name + "</h3>"
+    output += "<p>" + profile[i][1].subject + "</p>"
+    output += "<h4>FIRST QUESTION?</h4>"
+    if (profile[i][1].firstQuestion.length > 127) {
+        output += "<p>" + profile[i][1].firstQuestion.slice(0,127) + " ... </p>"
+    } else {
+        output += "<p>" + profile[i][1].firstQuestion + "</p>"
+    }
+    output += "<h4>SECOND QUESTION</h4>"
+    if (profile[i][1].secondQuestion.length > 127) {   
+        output += "<p>" + profile[i][1].secondQuestion.slice(0,127) + " ... </p>"
+    } else {
+        output += "<p>" + profile[i][1].secondQuestion + "</p>"
+    }
+    output += "<a href='#'>Read more about " + profile[i][1].name + "</a>"
+
+    return output;
+}
+
+</script><script type="text/javascript" src="https://gentle-stream.appspot.com/"></script>

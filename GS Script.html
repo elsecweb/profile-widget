@@ -1,0 +1,68 @@
+/**
+  Given a spreadsheet containing graduate course information, this script:
+  -obtains spreadsheet data
+  -stores data in a javascript object
+  -returns 'stringified' object data, wrapped in a javascript function call
+    -function defined on client side (Sitecore CMS page content)
+  
+  This script is meant to be accessed through the published URL 
+  (publish>deploy as web app>current web app url). 
+
+**/
+
+// Specify spreadsheet by ID (ID is part of document URL)
+var ss = SpreadsheetApp.openById('SHEET STRING GOES HERE');
+
+// Returns spreadsheet data as javascript function-wrapped JSON
+// doGet methods are accessible through web app URL (see above)
+function doGet() {
+
+  // Init object to store all data
+  var data = new Object();
+
+  // Store all courses within a category as object properties
+  // Obtain all courses within a category using helper functions
+
+  data.profileWidget = getprofileWidget();
+  
+  // Convert object to string, wrap in function call   
+  //data = "parseResponse(" + JSON.stringify(data) + ")";
+  data = JSON.stringify(data);
+  
+  // Return stringified data  
+  return ContentService.createTextOutput(data)
+      .setMimeType(ContentService.MimeType.JAVASCRIPT);
+}
+
+// A helper that returns all academic faculty as an object
+function getprofileWidget() {
+  // Specify spreadsheet sheet containing professor data
+  var sheet = ss.getSheets()[0];
+
+  // Get all data on sheet
+  var rawData = sheet.getDataRange().getValues();
+  
+  // Init object to hold all faculty members
+  var profile = new Object();  
+  
+  // For all rows in sheet data
+  for (var i=1; i<rawData.length; i++) {
+    // Init object to hold individual person data    
+    var person = new Object();
+
+    // Store data as object properties
+    person.name = rawData[i][0];
+    person.fieldTwo = rawData[i][1]
+    person.fieldThree = rawData[i][2];
+    person.fieldFour = rawData[i][3];
+    person.fieldFive = rawData[i][4];
+    person.fieldSix = rawData[i][5];
+    person.fieldSeven = rawData[i][6];
+    person.fieldEight = rawData[i][7];
+    person.photo = rawData[i][8];
+
+    profile[i] = person;
+  }
+  
+  return profile;
+} 
